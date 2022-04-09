@@ -106,9 +106,6 @@ fun bestSum(target: Int, input: List<Int>, memory: BestSumMemory = emptyMap()): 
                 (listOf(*acc.first.toTypedArray(), possibleCombination)) to result.second
             } ?: (acc.first to result.second)
         }.last()
-        if (possibilities.first.isEmpty()) {
-            return null to possibilities.second
-        }
         val best = if (possibilities.first.isEmpty()) null else possibilities.first.minByOrNull { it.size }
         best to (possibilities.second + ( target to best ))
     }
