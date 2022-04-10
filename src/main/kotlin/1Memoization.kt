@@ -9,6 +9,12 @@ fun main(args: Array<String>) {
     println(canSum(300, listOf(7, 14)).first)
     println(howSum(300, listOf(7, 14)).first)
     println(bestSum(100, listOf(1, 2, 5, 25)).first)
+    println(canConstruct("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeef",
+        listOf("e", "ee", "eee", "eeee", "eeeee", "eeeeee")).first)
+    println(countConstruct("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeef",
+        listOf("e", "ee", "eee", "eeee", "eeeee", "eeeeee")).first)
+    println(allConstruct("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeef",
+        listOf("e", "ee", "eee", "eeee", "eeeee", "eeeeee")).first)
 }
 
 // fibonacci calculation
@@ -108,5 +114,61 @@ fun bestSum(target: Int, input: List<Int>, memory: BestSumMemory = emptyMap()): 
         }.last()
         val best = if (possibilities.first.isEmpty()) null else possibilities.first.minByOrNull { it.size }
         best to (possibilities.second + ( target to best ))
+    }
+}
+
+// given: a target word and a list with words
+// question: is it possible to build the target word out of the given words?
+// limitation: build the target with concatenating the words
+
+typealias WordBank = List<String>
+
+typealias CanConstructMemory = Map<String, Boolean>
+
+fun canConstruct(target: String, wordBank: WordBank, memory: CanConstructMemory = emptyMap()): Pair<Boolean, CanConstructMemory> {
+    return if (target.isBlank()) true to memory
+    else memory[target]?.let { it to memory } ?: run {
+        false to wordBank.filter { target.startsWith(it) }.scan(memory) { acc, word ->
+            val canConstruct = canConstruct(target.substringAfter(word), wordBank, acc)
+            if (canConstruct.first) {
+                return canConstruct
+            }
+            canConstruct.second
+        }.last() + (target to false)
+    }
+}
+
+// given: a target word and a list with words
+// question: How many solutions are there to build the target word out of the given words?
+// limitation: build the target with concatenating the words
+
+typealias CountConstructMemory = Map<String, Int>
+
+fun countConstruct(target: String, wordBank: WordBank, memory: CountConstructMemory = emptyMap()): Pair<Int, CountConstructMemory> {
+    return if (target.isBlank()) 1 to memory
+    else memory[target]?.let { it to memory } ?: run {
+        val countConstructs = wordBank.filter { target.startsWith(it) }.scan(0 to memory) { acc, word ->
+            val countConstruct = countConstruct(target.substringAfter(word), wordBank, acc.second)
+            (acc.first + countConstruct.first) to countConstruct.second
+        }.last()
+        countConstructs.first to (countConstructs.second + (target to countConstructs.first))
+    }
+}
+
+// given: a target word and a list with words
+// question: What are the solutions to build the target word out of the given words?
+// limitation: build the target with concatenating the words
+
+typealias AllConstructMemory = Map<String, List<List<String>>>
+
+fun allConstruct(target: String, wordBank: WordBank, memory: AllConstructMemory = emptyMap()): Pair<List<List<String>>, AllConstructMemory> {
+    return if (target.isBlank()) listOf(emptyList<String>()) to memory
+    else memory[target]?.let { it to memory } ?: run {
+        val allConstructs = wordBank.filter { target.startsWith(it) }.scan(emptyList<List<String>>() to memory) { acc, word ->
+            val allConstruct = allConstruct(target.substringAfter(word), wordBank, acc.second)
+            val newConstructs = acc.first + allConstruct.first.map { listOf(word, *it.toTypedArray()) }
+            newConstructs to allConstruct.second
+        }.last()
+        allConstructs.first to (allConstructs.second + (target to allConstructs.first))
     }
 }
