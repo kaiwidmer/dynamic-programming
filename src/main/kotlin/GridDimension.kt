@@ -1,0 +1,1 @@
+data class GridDimension(val m: Int, val n: Int)

@@ -22,9 +22,9 @@ fun main(args: Array<String>) {
 // 1 1 2 3 5 8 13 21 ...
 
 // concept is called memoization
-typealias FibMemory = Map<Long, Long>
+private typealias FibMemory = Map<Long, Long>
 
-fun fib(n: Long, fibMemory: FibMemory = emptyMap()): Pair<Long, FibMemory> {
+private fun fib(n: Long, fibMemory: FibMemory = emptyMap()): Pair<Long, FibMemory> {
     return if (n <= 2) 1L to (fibMemory + (n to 1))
     else fibMemory[n]?.let { it to fibMemory } ?: run {
         val nCalculation1 = n - 1
@@ -44,9 +44,9 @@ fun fib(n: Long, fibMemory: FibMemory = emptyMap()): Pair<Long, FibMemory> {
 // concept: think of the recursive calls like a tree and think of the problem like a tree.
 // In the end, this problem similar to the fibonacci problem
 
-typealias GridMemory = Map<GridDimension, Long>
+private typealias GridMemory = Map<GridDimension, Long>
 
-fun calculate(gridDimension: GridDimension, gridMemory: GridMemory = emptyMap()): Pair<Long, GridMemory> {
+private fun calculate(gridDimension: GridDimension, gridMemory: GridMemory = emptyMap()): Pair<Long, GridMemory> {
     return if (gridDimension.m <= 0 || gridDimension.n <= 0) 0L to gridMemory
     else if (gridDimension.m == 1 && gridDimension.n == 1) 1L to gridMemory
     else gridMemory[gridDimension]?.let { it to gridMemory } ?: run {
@@ -57,15 +57,13 @@ fun calculate(gridDimension: GridDimension, gridMemory: GridMemory = emptyMap())
     }
 }
 
-data class GridDimension(val m: Int, val n: Int)
-
 // given: a target number and an array of numbers
 // question: can the target being built, out of the ones in the array
 // limitation: just use addition to build the number
 
-typealias CanSumMemory = List<Int>
+private typealias CanSumMemory = List<Int>
 
-fun canSum(target: Int, input: List<Int>, memory: CanSumMemory = emptyList()): Pair<Boolean, CanSumMemory> {
+private fun canSum(target: Int, input: List<Int>, memory: CanSumMemory = emptyList()): Pair<Boolean, CanSumMemory> {
     return if (target == 0) true to memory
     else if (target < 0) false to memory
     else if (memory.contains(target)) false to memory
@@ -82,9 +80,9 @@ fun canSum(target: Int, input: List<Int>, memory: CanSumMemory = emptyList()): P
 // question: return any combination of the given numbers, that are summed up equals the target number
 // limitation: return null if there is no combination
 
-typealias HowSumMemory = List<Int>
+private typealias HowSumMemory = List<Int>
 
-fun howSum(target: Int, input: List<Int>, memory: HowSumMemory = emptyList()): Pair<List<Int>?, HowSumMemory> {
+private fun howSum(target: Int, input: List<Int>, memory: HowSumMemory = emptyList()): Pair<List<Int>?, HowSumMemory> {
     return if (target == 0) emptyList<Int>() to memory
     else if (target < 0) null to memory
     else if (memory.contains(target)) null to memory
@@ -99,9 +97,9 @@ fun howSum(target: Int, input: List<Int>, memory: HowSumMemory = emptyList()): P
 // question: return the smallest combination of the given numbers, that are summed up equals the target number
 // limitation: return null if there is no combination
 
-typealias BestSumMemory = Map<Int, List<Int>?>
+private typealias BestSumMemory = Map<Int, List<Int>?>
 
-fun bestSum(target: Int, input: List<Int>, memory: BestSumMemory = emptyMap()): Pair<List<Int>?, BestSumMemory> {
+private fun bestSum(target: Int, input: List<Int>, memory: BestSumMemory = emptyMap()): Pair<List<Int>?, BestSumMemory> {
     return if (target == 0) emptyList<Int>() to memory
     else if (target < 0) null to memory
     else memory[target]?.let { it to memory} ?: run {
@@ -121,11 +119,11 @@ fun bestSum(target: Int, input: List<Int>, memory: BestSumMemory = emptyMap()): 
 // question: is it possible to build the target word out of the given words?
 // limitation: build the target with concatenating the words
 
-typealias WordBank = List<String>
+private typealias WordBank = List<String>
 
-typealias CanConstructMemory = Map<String, Boolean>
+private typealias CanConstructMemory = Map<String, Boolean>
 
-fun canConstruct(target: String, wordBank: WordBank, memory: CanConstructMemory = emptyMap()): Pair<Boolean, CanConstructMemory> {
+private fun canConstruct(target: String, wordBank: WordBank, memory: CanConstructMemory = emptyMap()): Pair<Boolean, CanConstructMemory> {
     return if (target.isBlank()) true to memory
     else memory[target]?.let { it to memory } ?: run {
         false to wordBank.filter { target.startsWith(it) }.scan(memory) { acc, word ->
@@ -142,9 +140,9 @@ fun canConstruct(target: String, wordBank: WordBank, memory: CanConstructMemory 
 // question: How many solutions are there to build the target word out of the given words?
 // limitation: build the target with concatenating the words
 
-typealias CountConstructMemory = Map<String, Int>
+private typealias CountConstructMemory = Map<String, Int>
 
-fun countConstruct(target: String, wordBank: WordBank, memory: CountConstructMemory = emptyMap()): Pair<Int, CountConstructMemory> {
+private fun countConstruct(target: String, wordBank: WordBank, memory: CountConstructMemory = emptyMap()): Pair<Int, CountConstructMemory> {
     return if (target.isBlank()) 1 to memory
     else memory[target]?.let { it to memory } ?: run {
         val countConstructs = wordBank.filter { target.startsWith(it) }.scan(0 to memory) { acc, word ->
@@ -159,9 +157,9 @@ fun countConstruct(target: String, wordBank: WordBank, memory: CountConstructMem
 // question: What are the solutions to build the target word out of the given words?
 // limitation: build the target with concatenating the words
 
-typealias AllConstructMemory = Map<String, List<List<String>>>
+private typealias AllConstructMemory = Map<String, List<List<String>>>
 
-fun allConstruct(target: String, wordBank: WordBank, memory: AllConstructMemory = emptyMap()): Pair<List<List<String>>, AllConstructMemory> {
+private fun allConstruct(target: String, wordBank: WordBank, memory: AllConstructMemory = emptyMap()): Pair<List<List<String>>, AllConstructMemory> {
     return if (target.isBlank()) listOf(emptyList<String>()) to memory
     else memory[target]?.let { it to memory } ?: run {
         val allConstructs = wordBank.filter { target.startsWith(it) }.scan(emptyList<List<String>>() to memory) { acc, word ->
